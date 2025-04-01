@@ -28,29 +28,52 @@ export default function Canvas() {
     contextRef.current = context;
   }, []);
 
+  function getTouchPosition(canvas, touchEvent) {
+    const rect = canvas.getBoundingClientRect();
+    return {
+      x: touchEvent.touches[0].clientX - rect.left,
+      y: touchEvent.touches[0].clientY - rect.top,
+    };
+  }
+
   function StartErasing(e) {
-    const { offsetX, offsetY } = e.nativeEvent;
+    let position;
+    if (e.type === 'touchstart') {
+      position = getTouchPosition(canvasRef.current, e);
+    } else {
+      e.preventDefault();
+      position = {
+        x: e.nativeEvent.offsetX,
+        y: e.nativeEvent.offsetY,
+      };
+    }
     contextRef.current.beginPath();
-    contextRef.current.moveTo(offsetX, offsetY);
+    contextRef.current.moveTo(position.x, position.y);
     setIsErasing(true);
-    e.nativeEvent.preventDefault();
   }
 
   function Erasing(e) {
-    if (isErasing) {
-      const { offsetX, offsetY } = e.nativeEvent;
-      contextRef.current.moveTo(offsetX, offsetY);
-      contextRef.current.clearRect(
-        offsetX,
-        offsetY,
-        50,
-        50
-      );
+    if (!isErasing) return;
+    let position;
+    if (e.type === 'touchmove') {
+      position = getTouchPosition(canvasRef.current, e);
+    } else {
+      e.preventDefault();
+      position = {
+        x: e.nativeEvent.offsetX,
+        y: e.nativeEvent.offsetY,
+      };
     }
-    e.nativeEvent.preventDefault();
+    contextRef.current.clearRect(
+      position.x,
+      position.y,
+      50,
+      50
+    );
   }
 
-  function StopErasing() {
+  function StopErasing(e) {
+    e.preventDefault();
     contextRef.current.closePath();
     setIsErasing(false);
   }
