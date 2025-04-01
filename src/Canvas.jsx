@@ -60,6 +60,9 @@ export default function Canvas() {
       onMouseDown={StartErasing}
       onMouseMove={Erasing}
       onMouseUp={StopErasing}
+      onTouchStart={StartErasing}
+      onTouchMove={Erasing}
+      onTouchEnd={StopErasing}
       ref={canvasRef}
       style={bg}
     ></canvas>
