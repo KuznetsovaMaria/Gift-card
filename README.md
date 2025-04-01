@@ -1,4 +1,4 @@
-Gift card
+Gift card for my best friend: https://kuznetsovamaria.github.io/Gift-card/
 
 # React + Vite
 
